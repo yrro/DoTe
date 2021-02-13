@@ -28,21 +28,19 @@ curl -L -o /config/dote_mips https://github.com/chrisstaite/DoTe/releases/latest
 mkdir -p /config/scripts/post-config.d/
 cat >/config/scripts/post-config.d/10-dote <<EOF
 #!/bin/sh
-/config/dote_mips -s [::1]:5353 -d -P /var/run/dote.pid
+/config/dote_mips -s 127.0.0.53:53 -d -P /var/run/dote.pid
 EOF
 chmod +x /config/dote_mips /config/scripts/post-config.d/10-dote
 sudo /config/scripts/post-config.d/10-dote
 configure
-set service dns forwarding options server=::1#5353
-delete service dns forwarding name-server
+set service dns forwarding name-server 127.0.0.53
 commit
 ~~~~~
 
 This downloads the latest release to the user-configured /config directory,
 creates a start up script, makes them executable and then runs it.  Finally
 the configuration changes the existing nameserver configuration to use DoTe
-on localhost.  It needs to use the options configuration because EdgeOS
-doesn't support specifying the port otherwise.
+on localhost.
 
 Read the run section below and edit the /config/scripts/post-config.d/10-dote
 file for advanced options such as not using the default resolver.
